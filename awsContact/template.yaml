@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  emailer
+
+  Sample SAM Template for emailer
+
+
+Globals:
+  Function:
+    Timeout: 20
+
+Resources:
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            Effect: Allow
+            Action:
+              - 'ses:SendEmail'
+              - 'ses:SendRawEmail'
+            Resource: '*'
+      CodeUri: EmailFunction
+      Handler: edu.uchicago.adamzhang22.emailer.App::handleRequest
+      Runtime: java11
+      MemorySize: 512
+      Events:
+        MailSender:
+          Type: Api
+          Properties:
+            Path: /mail
+            Method: POST
+
+Outputs:
+  EmailFunction:
+    Description: "API Gateway endpoint URL for emailer lambda"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/mail/"
